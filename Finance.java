@@ -13,7 +13,7 @@ public class Finance extends JFrame implements ActionListener{
 	private JMenuItem menuItem;
 	
 	public Finance(){ //Default Constructor
-		super("Budget Using Graphs & Numbers"); //Used to change title of window
+		super("Financing Elements"); //Used to change title of window
 		contents = getContentPane(); 
 		contents.setLayout(new BorderLayout()); //Set the main window to BorderLayout
 		
