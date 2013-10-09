@@ -13,4 +13,5 @@ public interface ReceiptInterface {
 	
 	public String getInfo();
 	public String getDate();
+	public boolean equals(Receipt testEntry);
 }
