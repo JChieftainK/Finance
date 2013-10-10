@@ -11,6 +11,10 @@ public class Finance extends JFrame implements ActionListener{
 	private JMenuBar menuBar;
 	private JMenu menu;
 	private JMenuItem menuItem;
+	private JPanel mainPanel, buttonPanel, flowPanel;
+	private JTextField dayText, monthText, yearText, reasonText, amountText;
+	private JLabel moneyLabel, slashLabel;
+	private JButton incomeButton, expenseButton;
 	
 	public Finance(){ //Default Constructor
 		super("Financing Elements"); //Used to change title of window
@@ -30,7 +34,6 @@ public class Finance extends JFrame implements ActionListener{
 		
 		setJMenuBar(menuBar); //Adds menu bar to GUI
 		//*************************************
-	//*************************************
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayout(3,1));
 		
@@ -86,8 +89,9 @@ public class Finance extends JFrame implements ActionListener{
 		
 		mainPanel.add(buttonPanel);
 		//*************************************
+		contents.add(mainPanel, BorderLayout.CENTER);
 		
-		setSize(200, 200); //Changes the size of the window by pixels
+		setSize(300, 150); //Changes the size of the window by pixels
 		setVisible(true); //Tells it to be seen on the computer screen
 	}
 	
