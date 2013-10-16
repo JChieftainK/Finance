@@ -1,3 +1,4 @@
+import javax.swing.*;
 class TestLinkedBag {
 	public static void main(String[] args) {
 		BagInterface <String> aBag = new LinkedBag<String>();
@@ -42,5 +43,18 @@ class TestLinkedBag {
 		System.out.println("Empty: " + aBag.isEmpty());
 		System.out.println("Size: " + aBag.getCurrentSize());
 		System.out.println("Contains Goodnight: " + aBag.contains("Goodnight"));
+		
+		System.out.println("\n\nTesting JOptionPane");
+		Object[] objects = {"New", "Open"};
+		//System.out.println(JOptionPane.NO_OPTION == JOptionPane.showOptionDialog(null, "Testing OPEN and NEW", "Title", 
+							//JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, objects, objects[1]));
+							
+		JFileChooser chooser = new JFileChooser();
+		int openValue = chooser.showOpenDialog(null);
+			if(openValue == JFileChooser.APPROVE_OPTION){
+				System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+				String result = chooser.getSelectedFile().getAbsolutePath();
+				System.out.println(chooser.getSelectedFile().getAbsolutePath());
+			}
 	}
 }

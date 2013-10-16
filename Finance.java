@@ -15,12 +15,53 @@ public class Finance extends JFrame implements ActionListener{
 	private JTextField dayText, monthText, yearText, reasonText, amountText;
 	private JLabel moneyLabel, slashLabel;
 	private JButton incomeButton, expenseButton;
+	private ReceiptInterface receipts;
+	private BagInterface linkedReceiptBag, linkedFileBag;
+	private FileInterface settingsFile;
 	
 	public Finance(){ //Default Constructor
 		super("Financing Elements"); //Used to change title of window
 		contents = getContentPane(); 
 		contents.setLayout(new BorderLayout()); //Set the main window to BorderLayout
-		
+		//*************************************
+		receipts = new Receipt();
+		linkedReceiptBag = new LinkedBag();
+		linkedFileBag = new LinkedBag();
+		settingsFile = new FileMod();
+		JFileChooser chooser = new JFileChooser();
+		Object[] objects = {"New", "Open"};
+		while(true){
+			int optionChose = JOptionPane.showOptionDialog(null, "Testing OPEN and NEW", "Title", 
+							JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, objects, objects[1]);
+			if(JOptionPane.NO_OPTION == optionChose){
+				int openValue = chooser.showOpenDialog(null);
+				if(openValue == JFileChooser.APPROVE_OPTION){
+					System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+					settingsFile.setPath(chooser.getSelectedFile().getAbsolutePath()); //Set Settings File Path
+					if(settingsFile.fileCheck("FinanceSettings.txt")){
+						for(int i = 0; i < settingsFile.getLines(); i++){
+							linkedFileBag.add(new FileMod(settingsFile.getParentPath(), settingsFile.readLine(i)));
+						}
+						break;
+					}else{
+						JOptionPane.showMessageDialog(null, "The file \"" + chooser.getSelectedFile().getName() + 
+												"\" is the incorrect file.\nPlease open the file named \"FinanceSettings.txt\"", 
+												"Incorrect File", JOptionPane.ERROR_MESSAGE);
+					}
+				}else if(openValue == JFileChooser.CANCEL_OPTION){
+					System.out.println("Cancel");
+					System.exit(0);
+				}else if(openValue == JFileChooser.ERROR_OPTION){
+					System.out.println("Error");
+					System.exit(0);
+				}
+			}else if(JOptionPane.YES_OPTION == optionChose){
+				System.out.println("Yes/New");
+				break;
+			}else{
+				System.exit(0);
+			}
+		}
 		//*************************************
 		menuBar = new JMenuBar(); //Set up JMenu
 		
