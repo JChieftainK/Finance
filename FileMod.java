@@ -19,8 +19,8 @@ public class FileMod implements FileInterface{
 		aPath = Paths.get(thePath);
 	}
 	
-	public String getPath(){
-		return aPath.toString();
+	public Path getPath(){
+		return aPath;
 	}
 	
 	public String getParentPath(){
@@ -71,7 +71,7 @@ public class FileMod implements FileInterface{
 	}
 	
 	public boolean fileCheck(String fileName){
-		return aPath.getFileName().toString() == fileName;
+		return (aPath.getFileName().toString()).equals(fileName);
 	}
 	
 	/**	@param 
@@ -89,11 +89,11 @@ public class FileMod implements FileInterface{
 		return success;
 	}
 	
-	public String toString(){
-		return aPath.toString();
-	}
-	
 	public boolean createFile(){
 		return false;
+	}
+	
+	public String toString(){
+		return aPath.toString();
 	}
 }
