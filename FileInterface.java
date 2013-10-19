@@ -11,8 +11,10 @@ public interface FileInterface {
 	public boolean createFile();
 	public boolean checkIfExists();
 	public boolean fileCheck(String fileName);
+	public void add(String fileName);
 	
 	public String readLine(int line);
+	public boolean appendToFile(String aTF);
 	
 	public String toString();
 }
