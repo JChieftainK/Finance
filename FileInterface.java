@@ -15,6 +15,7 @@ public interface FileInterface {
 	
 	public String readLine(int line);
 	public boolean appendToFile(String aTF);
+	public boolean clearFile();
 	
 	public String toString();
 }

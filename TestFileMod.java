@@ -33,6 +33,12 @@ public class TestFileMod {
 			
 			System.out.println("File Appended to: " + fileMan.appendToFile("Hello:World:!"));
 			
+			//System.out.println("Clear File: " + fileMan.clearFile());
+			
+			System.out.println("Lines in File: " + fileMan.getLines());
+			
+			System.out.println("Second to Last Line: " + fileMan.readLine(fileMan.getLines() - 1));
+			
 			System.out.println("Test");
 			FileInterface fileTest = new FileMod(fileMan.getParentPath(), "Accounting.txt");
 			System.out.println(fileTest.toString());

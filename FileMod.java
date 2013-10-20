@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.BufferedWriter;
 
 public class FileMod implements FileInterface{
-	private Path aPath;
+	private Path aPath; //Path data member
 	
 	public FileMod(){ //Default constructor
 		aPath = null; //Sets initial path to null
@@ -62,39 +62,66 @@ public class FileMod implements FileInterface{
 		return success; //return failure or success
 	}
 	
-	public int getLines(){
-		int nrlines = 0;
-		if(checkIfExists()){
-			try{
-				BufferedReader bufferRead = null;
-				bufferRead = new BufferedReader(new FileReader(aPath.toString()));
-			
-				while(bufferRead.readLine() != null){
-					nrlines += 1;
-				}
-				bufferRead.close();
-			}catch(IOException e){
-				nrlines = -1;
+	/**	Writes to the file but erases everything and places
+	*	an empty string into it
+	*	@return boolean deciding failure or success */
+	public boolean clearFile(){
+		boolean success = false; //assume failuer
+		try { //try due to exception thrown
+			if(checkIfExists()){
+				BufferedWriter bufferWrite = null; //Create a buffer variable with null. Will be used later
+				bufferWrite = new BufferedWriter(new FileWriter(aPath.toString())); //Gives path, and boolean for appending
+				bufferWrite.write(""); //writes nothing to the file that was given
+				bufferWrite.close(); //close the file so that the file is written to
+				success = true; //change result to a successful result
 			}
+		} catch (Exception e) {
+			success = false; //fail due to error
 		}
-		return nrlines;
+		return success; //return failure or success
 	}
 	
+	/** This method is to find out how many lines
+	*	are in a file. Returning -1 if it is an incorrect
+	*	@return int is the number of lines counted*/
+	public int getLines(){
+		int nrlines = 0; //keeps track of number of lines
+		if(checkIfExists()){ //checks that it exists first
+			try{
+				BufferedReader bufferRead = null; //Create a fake buff
+				bufferRead = new BufferedReader(new FileReader(aPath.toString())); //initiate fake buff with path
+			
+				while(bufferRead.readLine() != null){ //Traverse the file until null is encountered
+					nrlines += 1; //increment number of lines
+				}
+				bufferRead.close(); //close to finish reading
+			}catch(IOException e){ //Catch IOException if encountered
+				nrlines = -1; //change nrlines to -1 to return an error
+			}
+		}
+		return nrlines; //return int or -1
+	}
+	
+	/** This will read the lines of a file until it finds the 
+	*	line given and stores that then returns the String.
+	*	null is used as a way to tell if anything went wrong.
+	*	@param line is the index line to pick from file
+	*	@return String the line that was chosen*/
 	public String readLine(int line){
-		String result = null;
-		try{
-			BufferedReader buffRead = null;
-			buffRead = new BufferedReader(new FileReader(aPath.toString()));
-			String temp;
-			for(int i = 0; (temp = buffRead.readLine()) != null; i++){
-				if(i == line){
-					result = temp;
-					break;
+		String result = null; //Set the string intially to null
+		try{ //try due to IOException 
+			BufferedReader buffRead = null; //declare buffRead
+			buffRead = new BufferedReader(new FileReader(aPath.toString())); //initialize using path
+			String temp; //create temporary string for reading the file
+			for(int i = 1; (temp = buffRead.readLine()) != null; i++){ //traverse the file storing String in temp
+				if(i == line){ 
+					result = temp; //store the temporary String to return
+					break; //break out of the for loop
 				}
 			}
-			buffRead.close();
-		}catch(IOException e){
-			result = null;
+			buffRead.close(); //close the read
+		}catch(IOException e){ //Catch IOException if thrown
+			result = null; //return null if error occurs
 		}
 		return result;
 	}
