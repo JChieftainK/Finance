@@ -39,8 +39,13 @@ public class TestFileMod {
 			
 			System.out.println("Second to Last Line: " + fileMan.readLine(fileMan.getLines() - 1));
 			
+			System.out.println("Clear file: " + fileMan.clearFile());
+			for(int i = 1; i <= fileMan.getLines(); i++){
+				System.out.println("Line: " + i);
+			}
+			
 			System.out.println("Test");
-			FileInterface fileTest = new FileMod(fileMan.getParentPath(), "Accounting.txt");
+			FileInterface fileTest = new FileMod(fileMan.getParentPath(), fileMan.readLine(fileMan.getLines()));
 			System.out.println(fileTest.toString());
 			
 		}

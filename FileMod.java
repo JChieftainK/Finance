@@ -1,3 +1,8 @@
+/*
+*	@author Justin Kennedy
+*	Modifies file by creating 
+*	and writing/reading it
+*/
 import java.nio.file.*;
 import java.io.IOException;
 import java.io.FileReader;
