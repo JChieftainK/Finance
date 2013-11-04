@@ -39,7 +39,7 @@ public class TestFileMod {
 			
 			System.out.println("Second to Last Line: " + fileMan.readLine(fileMan.getLines() - 1));
 			
-			System.out.println("Clear file: " + fileMan.clearFile());
+			//System.out.println("Clear file: " + fileMan.clearFile());
 			for(int i = 1; i <= fileMan.getLines(); i++){
 				System.out.println("Line: " + i);
 			}
