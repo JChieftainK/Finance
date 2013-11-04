@@ -9,9 +9,8 @@ public interface ReceiptInterface {
 	public int getDay();
 	public int getMonth();
 	public int getYear();
-	public int getCost();
+	public double getCost();
 	
-	public String getInfo();
-	public String getDate();
+	public String toString();	
 	public boolean equals(Receipt testEntry);
 }
