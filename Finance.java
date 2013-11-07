@@ -17,7 +17,8 @@ public class Finance extends JFrame implements ActionListener{
 	private JLabel moneyLabel, slashLabel;
 	private JButton incomeButton, expenseButton;
 	private ReceiptInterface receipts;
-	private BagInterface linkedReceiptBag, linkedFileBag;
+	private BagInterface <Receipt> linkedReceiptBag;
+	private BagInterface <FileMod> linkedFileBag;
 	private FileInterface settingsFile;
 	private DecimalFormat pricePattern = new DecimalFormat("#0.00");
 	private DecimalFormat timePattern = new DecimalFormat("00");
@@ -27,8 +28,8 @@ public class Finance extends JFrame implements ActionListener{
 		contents = getContentPane(); 
 		contents.setLayout(new BorderLayout()); //Set the main window to BorderLayout
 		//*************************************
-		linkedReceiptBag = new LinkedBag(); //create an instance of LinkedBag for receipts
-		linkedFileBag = new LinkedBag(); //create a linkedBag for file lines
+		linkedReceiptBag = new LinkedBag <Receipt>(); //create an instance of LinkedBag for receipts
+		linkedFileBag = new LinkedBag <FileMod>(); //create a linkedBag for file lines
 		settingsFile = new FileMod(); //create a file modification to make and edit files/folders
 		JFileChooser chooser = new JFileChooser();
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); //set to only select folders
@@ -48,9 +49,10 @@ public class Finance extends JFrame implements ActionListener{
 					settingsFile.setPath(chooser.getSelectedFile().getAbsolutePath()); //Set Settings File Path
 					settingsFile.add("FinanceSettings.txt"); //Add file to be main settings
 					if(settingsFile.checkIfExists()){ //Test for required file inside folder
-						for(int i = 0; i < settingsFile.getLines(); i++){ //Get amount of lines in file and traverse file
+						for(int i = 1; i <= settingsFile.getLines(); i++){ //Get amount of lines in file and traverse file
 							linkedFileBag.add(new FileMod(settingsFile.getParentPath(), settingsFile.readLine(i)));
 						}
+						createProfiles();
 						break;
 					}else{ //File is not inside of folder
 						JOptionPane.showMessageDialog(null, "The folder \"" + chooser.getSelectedFile().getName() + 
@@ -152,6 +154,10 @@ public class Finance extends JFrame implements ActionListener{
 				System.exit(0);
 			}
 		}
+	}
+	
+	public void createProfiles(){
+		for(int i = 1; i <= se)
 	}
 	
 	public static void main(String[] args) { //Main method starts program
