@@ -70,7 +70,7 @@ public class Receipt implements ReceiptInterface {
 		if(this.dayOfMonth == testEntry.getDay()){
 			if(this.monthOfYear == testEntry.getMonth()){
 				if(this.year == testEntry.getYear()){
-					if(this.whereFrom == testEntry.getWhere()){
+					if(this.whereFrom.equals(testEntry.getWhere())){
 						if(this.currencyAmount == testEntry.getCost()){
 							result = true;
 						}

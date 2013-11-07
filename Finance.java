@@ -5,6 +5,7 @@
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
+import java.text.DecimalFormat;
 
 public class Finance extends JFrame implements ActionListener{
 	private Container contents;
@@ -18,35 +19,43 @@ public class Finance extends JFrame implements ActionListener{
 	private ReceiptInterface receipts;
 	private BagInterface linkedReceiptBag, linkedFileBag;
 	private FileInterface settingsFile;
+	private DecimalFormat pricePattern = new DecimalFormat("#0.00");
+	private DecimalFormat timePattern = new DecimalFormat("00");
 	
 	public Finance(){ //Default Constructor
 		super("Financing Elements"); //Used to change title of window
 		contents = getContentPane(); 
 		contents.setLayout(new BorderLayout()); //Set the main window to BorderLayout
 		//*************************************
-		receipts = new Receipt();
-		linkedReceiptBag = new LinkedBag();
-		linkedFileBag = new LinkedBag();
-		settingsFile = new FileMod();
+		linkedReceiptBag = new LinkedBag(); //create an instance of LinkedBag for receipts
+		linkedFileBag = new LinkedBag(); //create a linkedBag for file lines
+		settingsFile = new FileMod(); //create a file modification to make and edit files/folders
 		JFileChooser chooser = new JFileChooser();
-		Object[] objects = {"New", "Open"};
-		while(true){
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); //set to only select folders
+		Object[] objects = {"New", "Open"}; //Used to make custom JOption text
+		while(true){ //runs indefinitely, must use break or exit to change
+			//Store the option of Opening or Creating a folder. Open = NoOption && New = YesOption
 			int optionChose = JOptionPane.showOptionDialog(null, "Testing OPEN and NEW", "Title", 
-							JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, objects, objects[1]);
-			if(JOptionPane.NO_OPTION == optionChose){
-				int openValue = chooser.showOpenDialog(null);
-				if(openValue == JFileChooser.APPROVE_OPTION){
-					System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+							JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, objects, objects[1]); 
+			
+			if(JOptionPane.NO_OPTION == optionChose){ //If Open is selected
+				JOptionPane.showMessageDialog(null, "Select the folder then click open.\n You may only select a folder",
+												"Title", JOptionPane.PLAIN_MESSAGE); //Help Text for users
+				int openValue = chooser.showOpenDialog(null); //store the option for choosing a folder
+				
+				if(openValue == JFileChooser.APPROVE_OPTION){ //Opening a folder was chosen
+					System.out.println("You chose to open this folder: " + chooser.getSelectedFile().getName()); //DEBUG
 					settingsFile.setPath(chooser.getSelectedFile().getAbsolutePath()); //Set Settings File Path
-					if(settingsFile.fileCheck("FinanceSettings.txt")){
-						for(int i = 0; i < settingsFile.getLines(); i++){
+					settingsFile.add("FinanceSettings.txt"); //Add file to be main settings
+					if(settingsFile.checkIfExists()){ //Test for required file inside folder
+						for(int i = 0; i < settingsFile.getLines(); i++){ //Get amount of lines in file and traverse file
 							linkedFileBag.add(new FileMod(settingsFile.getParentPath(), settingsFile.readLine(i)));
 						}
 						break;
-					}else{
-						JOptionPane.showMessageDialog(null, "The file \"" + chooser.getSelectedFile().getName() + 
-												"\" is the incorrect file.\nPlease open the file named \"FinanceSettings.txt\"", 
-												"Incorrect File", JOptionPane.ERROR_MESSAGE);
+					}else{ //File is not inside of folder
+						JOptionPane.showMessageDialog(null, "The folder \"" + chooser.getSelectedFile().getName() + 
+												"\" is the incorrect folder.\nPlease open the folder containing \"FinanceSettings.txt\"", 
+												"Incorrect Folder", JOptionPane.ERROR_MESSAGE);
 					}
 				}else if(openValue == JFileChooser.CANCEL_OPTION){
 					System.out.println("Cancel");
