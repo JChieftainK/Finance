@@ -17,8 +17,8 @@ public class Finance extends JFrame implements ActionListener{
 	private JLabel moneyLabel, slashLabel;
 	private JButton incomeButton, expenseButton;
 	private ReceiptInterface receipts;
-	private LinkInterface <Receipt> linkedReceiptBag;
-	private LinkInterface <FileMod> linkedFileBag;
+	private LinkInterface <Receipt> linkedReceiptList;
+	private LinkInterface <FileMod> linkedFileList;
 	private FileInterface settingsFile;
 	private DecimalFormat pricePattern = new DecimalFormat("#0.00");
 	private DecimalFormat timePattern = new DecimalFormat("00");
@@ -28,8 +28,8 @@ public class Finance extends JFrame implements ActionListener{
 		contents = getContentPane(); 
 		contents.setLayout(new BorderLayout()); //Set the main window to BorderLayout
 		//*************************************
-		linkedReceiptBag = new LList <Receipt>(); //create an instance of LinkedBag for receipts
-		linkedFileBag = new LList <FileMod>(); //create a linkedBag for file lines
+		linkedReceiptList = new LList <Receipt>(); //create an instance of LinkedBag for receipts
+		linkedFileList = new LList <FileMod>(); //create a linkedBag for file lines
 		settingsFile = new FileMod(); //create a file modification to make and edit files/folders
 		JFileChooser chooser = new JFileChooser();
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); //set to only select folders
@@ -48,9 +48,10 @@ public class Finance extends JFrame implements ActionListener{
 					System.out.println("You chose to open this folder: " + chooser.getSelectedFile().getName()); //DEBUG
 					settingsFile.setPath(chooser.getSelectedFile().getAbsolutePath()); //Set Settings File Path
 					settingsFile.add("FinanceSettings.txt"); //Add file to be main settings
+					
 					if(settingsFile.checkIfExists()){ //Test for required file inside folder
 						for(int i = 1; i <= settingsFile.getLines(); i++){ //Get amount of lines in file and traverse file
-							linkedFileBag.add(new FileMod(settingsFile.getParentPath(), settingsFile.readLine(i)));
+							linkedFileList.add(new FileMod(settingsFile.getParentPath(), settingsFile.readLine(i)));
 						}
 						createProfiles();
 						break;
@@ -157,7 +158,7 @@ public class Finance extends JFrame implements ActionListener{
 	}
 	
 	public void createProfiles(){
-		for(int i = 1; i <= se)
+		for(int i = 1; i <= linkedFileList; i++);
 	}
 	
 	public static void main(String[] args) { //Main method starts program
