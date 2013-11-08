@@ -17,8 +17,8 @@ public class Finance extends JFrame implements ActionListener{
 	private JLabel moneyLabel, slashLabel;
 	private JButton incomeButton, expenseButton;
 	private ReceiptInterface receipts;
-	private BagInterface <Receipt> linkedReceiptBag;
-	private BagInterface <FileMod> linkedFileBag;
+	private LinkInterface <Receipt> linkedReceiptBag;
+	private LinkInterface <FileMod> linkedFileBag;
 	private FileInterface settingsFile;
 	private DecimalFormat pricePattern = new DecimalFormat("#0.00");
 	private DecimalFormat timePattern = new DecimalFormat("00");
@@ -28,8 +28,8 @@ public class Finance extends JFrame implements ActionListener{
 		contents = getContentPane(); 
 		contents.setLayout(new BorderLayout()); //Set the main window to BorderLayout
 		//*************************************
-		linkedReceiptBag = new LinkedBag <Receipt>(); //create an instance of LinkedBag for receipts
-		linkedFileBag = new LinkedBag <FileMod>(); //create a linkedBag for file lines
+		linkedReceiptBag = new LList <Receipt>(); //create an instance of LinkedBag for receipts
+		linkedFileBag = new LList <FileMod>(); //create a linkedBag for file lines
 		settingsFile = new FileMod(); //create a file modification to make and edit files/folders
 		JFileChooser chooser = new JFileChooser();
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); //set to only select folders
