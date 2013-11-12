@@ -20,7 +20,7 @@ public interface FileInterface {
 	public String getParentPath();
 	
 	/** This method is to find out how many lines
-	*	are in a file. Returning -1 if it is an incorrect
+	*	are in a file. Returning -1 if it is an incorrect file
 	*	@return int is the number of lines counted*/
 	public int getLines();
 	

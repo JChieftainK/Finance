@@ -17,8 +17,8 @@ public class Finance extends JFrame implements ActionListener{
 	private JLabel moneyLabel, slashLabel;
 	private JButton incomeButton, expenseButton;
 	private ReceiptInterface receipts;
-	private LinkInterface <Receipt> linkedReceiptList;
-	private LinkInterface <FileMod> linkedFileList;
+	private ListInterface <Receipt> linkedReceiptList;
+	private ListInterface <FileMod> linkedFileList;
 	private FileInterface settingsFile;
 	private DecimalFormat pricePattern = new DecimalFormat("#0.00");
 	private DecimalFormat timePattern = new DecimalFormat("00");
@@ -53,7 +53,7 @@ public class Finance extends JFrame implements ActionListener{
 						for(int i = 1; i <= settingsFile.getLines(); i++){ //Get amount of lines in file and traverse file
 							linkedFileList.add(new FileMod(settingsFile.getParentPath(), settingsFile.readLine(i)));
 						}
-						createProfiles();
+						createProfile(1);
 						break;
 					}else{ //File is not inside of folder
 						JOptionPane.showMessageDialog(null, "The folder \"" + chooser.getSelectedFile().getName() + 
@@ -157,9 +157,63 @@ public class Finance extends JFrame implements ActionListener{
 		}
 	}
 	
-	public void createProfiles(){
-		for(int i = 1; i <= linkedFileList; i++);
+	public void createProfile(int accountNumber){
+		if(!linkedFileList.isEmpty()){
+			for(int i = 1; i <= (linkedFileList.getEntry(accountNumber)).getLines(); i++){
+				linkedReceiptList.add(new Receipt(separateDay((linkedFileList.getEntry(accountNumber)).readLine(i)),
+										separateMonth((linkedFileList.getEntry(accountNumber)).readLine(i)),
+										separateYear((linkedFileList.getEntry(accountNumber)).readLine(i)),
+										separateWhere((linkedFileList.getEntry(accountNumber)).readLine(i)),
+										separateAmount((linkedFileList.getEntry(accountNumber)).readLine(i))));
+			}
+		}
 	}
+	
+	public int separateDay(String lineRead){
+		int result = 0;
+		String[] separatedLine = separateLineRead(lineRead);
+		System.out.println("Day: " + separatedLine[0]); //DEBUG
+		result = Integer.parseInt(separatedLine[0]);
+		return result;
+	}
+	
+	public int separateMonth(String lineRead){
+		int result = 0;
+		String[] separatedLine = separateLineRead(lineRead);
+		System.out.println("Month: " + separatedLine[1]); //DEBUG
+		result = Integer.parseInt(separatedLine[1]);
+		return result;
+	}
+	
+	public int separateYear(String lineRead){
+		int result = 0;
+		String[] separatedLine = separateLineRead(lineRead);
+		System.out.println("Year: " + separatedLine[2]); //DEBUG
+		result = Integer.parseInt(separatedLine[2]);
+		return result;
+	}
+	
+	public String separateWhere(String lineRead){
+		String result = "";
+		String[] separatedLine = separateLineRead(lineRead);
+		System.out.println("Where: " + separatedLine[3]); //DEBUG
+		result = separatedLine[3];
+		return result;
+	}
+	
+	public double separateAmount(String lineRead){
+		double result = 0.0;
+		String[] separatedLine = separateLineRead(lineRead);
+		System.out.println("Amount: " + separatedLine[4]); //DEBUG
+		result = Double.parseDouble(separatedLine[4]);
+		return result;
+	}
+	
+	public String[] separateLineRead(String lineRead){
+		String[] result = lineRead.split(":");
+		return result;
+	}
+	
 	
 	public static void main(String[] args) { //Main method starts program
 		Finance fin = new Finance(); //Create an object of the finance app
