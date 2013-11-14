@@ -4,6 +4,7 @@ public class Receipt implements ReceiptInterface {
 	private int monthOfYear;
 	private int year;
 	private double currencyAmount;
+	private int expenseOrIncome;
 	
 	public Receipt(){
 		whereFrom = null;
@@ -11,14 +12,16 @@ public class Receipt implements ReceiptInterface {
 		monthOfYear = -1;
 		year = -1;
 		currencyAmount = -1;
+		expenseOrIncome = -1;
 	}
 	
-	public Receipt(int day, int month, int year, String where, double currency){
+	public Receipt(int day, int month, int year, String where, double currency, int eOrI){
 		whereFrom = where;
 		dayOfMonth = day;
 		monthOfYear = month;
 		this.year = year;
 		currencyAmount = currency;
+		expenseOrIncome = eOrI;
 	}
 	
 	public void setWhere(String newEntry){
@@ -40,6 +43,17 @@ public class Receipt implements ReceiptInterface {
 	public void setCost(double currency){
 		currencyAmount = currency;
 	}
+	
+	public void setExpenseOrIncome(String eOrI){
+		eOrI = eOrI.toLowerCase();
+		if(eOrI.equals("income")){
+			expenseOrIncome = 0;
+		}else if(eOrI.equals("expense")){
+			expenseOrIncome = 1;
+		}else{
+			expenseOrIncome = -1;
+		}
+	}
 
 	public String getWhere(){
 		return whereFrom;
@@ -60,9 +74,19 @@ public class Receipt implements ReceiptInterface {
 	public double getCost(){
 		return currencyAmount;
 	}
+	
+	public int getExpenseOrIncome(){
+		return expenseOrIncome;
+	}
 
 	public String toString(){
-		return new String(dayOfMonth + ", " + monthOfYear + ", " + year + ", " + whereFrom + ", " + currencyAmount);
+		String eOrI = "null";
+		if(expenseOrIncome == 1){
+			eOrI = "Expense";
+		}else if(expenseOrIncome == 0){
+			eOrI = "Income";
+		}
+		return new String(dayOfMonth + ", " + monthOfYear + ", " + year + ", " + whereFrom + ", " + currencyAmount + ", " + eOrI);
 	}
 	
 	public boolean equals(Receipt testEntry){
@@ -72,7 +96,9 @@ public class Receipt implements ReceiptInterface {
 				if(this.year == testEntry.getYear()){
 					if(this.whereFrom.equals(testEntry.getWhere())){
 						if(this.currencyAmount == testEntry.getCost()){
-							result = true;
+							if(this.expenseOrIncome == testEntry.getExpenseOrIncome()){
+								result = true;
+							}
 						}
 					}
 				}

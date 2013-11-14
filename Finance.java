@@ -14,7 +14,7 @@ public class Finance extends JFrame implements ActionListener{
 	private JMenuItem menuItem;
 	private JPanel mainPanel, buttonPanel, flowPanel;
 	private JTextField dayText, monthText, yearText, reasonText, amountText;
-	private JLabel moneyLabel, slashLabel;
+	private JLabel moneyLabel, slashLabel, amountLabel, currentAmount, successOrNot;
 	private JButton incomeButton, expenseButton;
 	private ReceiptInterface receipts;
 	private ListInterface <Receipt> linkedReceiptList;
@@ -27,6 +27,7 @@ public class Finance extends JFrame implements ActionListener{
 		super("Financing Elements"); //Used to change title of window
 		contents = getContentPane(); 
 		contents.setLayout(new BorderLayout()); //Set the main window to BorderLayout
+		currentAmount = new JLabel("0.00");
 		//*************************************
 		linkedReceiptList = new LList <Receipt>(); //create an instance of LinkedBag for receipts
 		linkedFileList = new LList <FileMod>(); //create a linkedBag for file lines
@@ -54,6 +55,7 @@ public class Finance extends JFrame implements ActionListener{
 							linkedFileList.add(new FileMod(settingsFile.getParentPath(), settingsFile.readLine(i)));
 						}
 						createProfile(1);
+						calculateAmount();
 						break;
 					}else{ //File is not inside of folder
 						JOptionPane.showMessageDialog(null, "The folder \"" + chooser.getSelectedFile().getName() + 
@@ -143,8 +145,28 @@ public class Finance extends JFrame implements ActionListener{
 		mainPanel.add(buttonPanel);
 		//*************************************
 		contents.add(mainPanel, BorderLayout.CENTER);
+		//*************************************
+		mainPanel = new JPanel();
+		mainPanel.setLayout(new GridLayout(1,2));
 		
-		setSize(300, 150); //Changes the size of the window by pixels
+		flowPanel = new JPanel();
+		flowPanel.setLayout(new FlowLayout());
+		
+		mainPanel.add(flowPanel);
+		
+		flowPanel = new JPanel();
+		flowPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		amountLabel = new JLabel("Amount: ");
+		flowPanel.add(amountLabel);
+		flowPanel.add(currentAmount);
+		
+		mainPanel.add(flowPanel);
+		
+		//*************************************
+		contents.add(mainPanel, BorderLayout.SOUTH);
+		//*************************************
+		
+		setSize(300, 160); //Changes the size of the window by pixels
 		setVisible(true); //Tells it to be seen on the computer screen
 	}
 	
@@ -157,6 +179,26 @@ public class Finance extends JFrame implements ActionListener{
 		}
 	}
 	
+	public void calculateAmount(){
+		double amount = 0.0;
+		if(!linkedReceiptList.isEmpty()){
+			for(int i = 1; i <= linkedReceiptList.getLength(); i++){
+				if((linkedReceiptList.getEntry(i)).getExpenseOrIncome() == 1){
+					amount -= (linkedReceiptList.getEntry(i)).getCost();
+				}else if((linkedReceiptList.getEntry(i)).getExpenseOrIncome() == 0){
+					amount += (linkedReceiptList.getEntry(i)).getCost();
+				}
+			}
+		}
+		if(amount < 0){
+			currentAmount.setForeground(Color.RED);
+		}else{
+			currentAmount.setForeground(Color.BLACK);
+		}
+		currentAmount.setText(pricePattern.format(amount));
+		System.out.println(pricePattern.format(amount));
+	}
+	
 	public void createProfile(int accountNumber){
 		if(!linkedFileList.isEmpty()){
 			for(int i = 1; i <= (linkedFileList.getEntry(accountNumber)).getLines(); i++){
@@ -164,7 +206,8 @@ public class Finance extends JFrame implements ActionListener{
 										separateMonth((linkedFileList.getEntry(accountNumber)).readLine(i)),
 										separateYear((linkedFileList.getEntry(accountNumber)).readLine(i)),
 										separateWhere((linkedFileList.getEntry(accountNumber)).readLine(i)),
-										separateAmount((linkedFileList.getEntry(accountNumber)).readLine(i))));
+										separateAmount((linkedFileList.getEntry(accountNumber)).readLine(i)),
+										separateEOrI((linkedFileList.getEntry(accountNumber)).readLine(i))));
 			}
 		}
 	}
@@ -206,6 +249,14 @@ public class Finance extends JFrame implements ActionListener{
 		String[] separatedLine = separateLineRead(lineRead);
 		System.out.println("Amount: " + separatedLine[4]); //DEBUG
 		result = Double.parseDouble(separatedLine[4]);
+		return result;
+	}
+	
+	public int separateEOrI(String lineRead){
+		int result = -1;
+		String[] separatedLine = separateLineRead(lineRead);
+		System.out.println("Expense Or Income: " + separatedLine[5]); //DEBUG
+		result = Integer.parseInt(separatedLine[5]);
 		return result;
 	}
 	
