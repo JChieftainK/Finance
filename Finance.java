@@ -176,7 +176,19 @@ public class Finance extends JFrame implements ActionListener{
 			if(source.getText() == "Exit"){ //Exit clicked. Exit program
 				System.exit(0);
 			}
+		}else if(ae.getSource() == incomeButton){
+			if(checkInputs(dayText.getText(), monthText.getText(), yearText.getText(), reasonText.getText(), amountText.getText())){
+				
+			}
+		}else if(ae.getSource() == expenseButton){
+			System.out.println("Expense");
 		}
+	}
+	
+	public boolean checkInputs(String dayString, String monthString, String yearString, String reasonString, String amountString){
+		boolean result = false;
+		
+		return result;
 	}
 	
 	public void calculateAmount(){
