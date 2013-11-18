@@ -178,17 +178,80 @@ public class Finance extends JFrame implements ActionListener{
 			}
 		}else if(ae.getSource() == incomeButton){
 			if(checkInputs(dayText.getText(), monthText.getText(), yearText.getText(), reasonText.getText(), amountText.getText())){
-				
+				int optionChose = JOptionPane.showConfirmDialog(null, "Is this information correct?" +
+												"\nDay: " + timePattern.format(Integer.parseInt(dayText.getText())) + 
+												"\nMonth: " + timePattern.format(Integer.parseInt(monthText.getText())) +
+												"\nYear: " + yearText.getText() + 
+												"\nFrom: " + reasonText.getText() +
+												"\nAmount: " + pricePattern.format(Double.parseDouble(amountText.getText())),
+												"Information Given", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+				if(optionChose == JOptionPane.OK_OPTION){
+					linkedReceiptList.add(new Receipt(Integer.parseInt(dayText.getText()), Integer.parseInt(monthText.getText()),
+												Integer.parseInt(yearText.getText()), reasonText.getText(), 
+												Double.parseDouble(amountText.getText()), 0));
+					//Add saving to the current account number
+					resetGUI();
+				}
+			}else{
+				JOptionPane.showMessageDialog(null, "The information is in an incorrect format." + 
+												"\nDay: " + dayText.getText() + "\nMonth: " + monthText.getText() +
+												"\nYear: " + yearText.getText() + "\nFrom: " + reasonText.getText() +
+												"\nAmount: " + amountText.getText(),
+												"Incorrect Format", JOptionPane.ERROR_MESSAGE);
+				resetGUI();
 			}
 		}else if(ae.getSource() == expenseButton){
 			System.out.println("Expense");
+			if(checkInputs(dayText.getText(), monthText.getText(), yearText.getText(), reasonText.getText(), amountText.getText())){
+				int optionChose = JOptionPane.showConfirmDialog(null, "Is this information correct?" +
+												"\nDay: " + timePattern.format(Integer.parseInt(dayText.getText())) + 
+												"\nMonth: " + timePattern.format(Integer.parseInt(monthText.getText())) +
+												"\nYear: " + yearText.getText() + 
+												"\nFrom: " + reasonText.getText() +
+												"\nAmount: " + pricePattern.format(Double.parseDouble(amountText.getText())),
+												"Information Given", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+				if(optionChose == JOptionPane.OK_OPTION){
+					linkedReceiptList.add(new Receipt(Integer.parseInt(dayText.getText()), Integer.parseInt(monthText.getText()),
+												Integer.parseInt(yearText.getText()), reasonText.getText(), 
+												Double.parseDouble(amountText.getText()), 1));
+					resetGUI();
+				}
+			}else{
+				JOptionPane.showMessageDialog(null, "The information is in an incorrect format." + 
+												"\nDay: " + dayText.getText() + "\nMonth: " + monthText.getText() +
+												"\nYear: " + yearText.getText() + "\nFrom: " + reasonText.getText() +
+												"\nAmount: " + amountText.getText(),
+												"Incorrect Format", JOptionPane.ERROR_MESSAGE);
+				resetGUI();
+			}
 		}
 	}
 	
 	public boolean checkInputs(String dayString, String monthString, String yearString, String reasonString, String amountString){
 		boolean result = false;
-		
+		String regex = "\\d+";
+		System.out.println(dayString.matches(regex));
+		if(dayString.matches(regex) && ((Integer.parseInt(dayString) >= 1) && (Integer.parseInt(dayString) <= 31))){
+			if(monthString.matches(regex) && ((Integer.parseInt(monthString) >=  1) && (Integer.parseInt(monthString) <= 12))){
+				if(yearString.matches(regex) && (Integer.parseInt(yearString) >= 1000)){
+					System.out.println("Double: " + (amountString.matches("\\d+\\.\\d+") || amountString.matches(regex)));
+					if((amountString.matches("\\d+\\.\\d+") || amountString.matches(regex)) && (Double.parseDouble(amountString) >= 0)){
+						System.out.println(pricePattern.format(Double.parseDouble(amountString)));
+						result = true;
+					}
+				}
+			}
+		}
 		return result;
+	}
+	
+	public void resetGUI(){
+		dayText.setText("DD");
+		monthText.setText("MM");
+		yearText.setText("YYYY");
+		reasonText.setText("");
+		amountText.setText("");
+		calculateAmount();
 	}
 	
 	public void calculateAmount(){
