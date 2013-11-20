@@ -22,6 +22,7 @@ public class Finance extends JFrame implements ActionListener{
 	private FileInterface settingsFile;
 	private DecimalFormat pricePattern = new DecimalFormat("#0.00");
 	private DecimalFormat timePattern = new DecimalFormat("00");
+	private int accountNumber = 1;
 	
 	public Finance(){ //Default Constructor
 		super("Financing Elements"); //Used to change title of window
@@ -54,7 +55,7 @@ public class Finance extends JFrame implements ActionListener{
 						for(int i = 1; i <= settingsFile.getLines(); i++){ //Get amount of lines in file and traverse file
 							linkedFileList.add(new FileMod(settingsFile.getParentPath(), settingsFile.readLine(i)));
 						}
-						createProfile(1);
+						createProfile();
 						calculateAmount();
 						break;
 					}else{ //File is not inside of folder
@@ -190,6 +191,9 @@ public class Finance extends JFrame implements ActionListener{
 												Integer.parseInt(yearText.getText()), reasonText.getText(), 
 												Double.parseDouble(amountText.getText()), 0));
 					//Add saving to the current account number
+					(linkedFileList.getEntry(accountNumber)).appendToFile(dayText.getText() + ":" + monthText.getText() + ":" +
+												yearText.getText() + ":" + reasonText.getText() + ":" + 
+												pricePattern.format(Double.parseDouble(amountText.getText())) + ":" + "0");
 					resetGUI();
 				}
 			}else{
@@ -214,6 +218,10 @@ public class Finance extends JFrame implements ActionListener{
 					linkedReceiptList.add(new Receipt(Integer.parseInt(dayText.getText()), Integer.parseInt(monthText.getText()),
 												Integer.parseInt(yearText.getText()), reasonText.getText(), 
 												Double.parseDouble(amountText.getText()), 1));
+					//Add expense to the current account number
+					(linkedFileList.getEntry(accountNumber)).appendToFile(dayText.getText() + ":" + monthText.getText() + ":" +
+												yearText.getText() + ":" + reasonText.getText() + ":" + 
+												pricePattern.format(Double.parseDouble(amountText.getText())) + ":" + "1");
 					resetGUI();
 				}
 			}else{
@@ -274,8 +282,9 @@ public class Finance extends JFrame implements ActionListener{
 		System.out.println(pricePattern.format(amount));
 	}
 	
-	public void createProfile(int accountNumber){
+	public void createProfile(){
 		if(!linkedFileList.isEmpty()){
+			System.out.println("Lines: " + (linkedFileList.getEntry(accountNumber)).getLines());
 			for(int i = 1; i <= (linkedFileList.getEntry(accountNumber)).getLines(); i++){
 				linkedReceiptList.add(new Receipt(separateDay((linkedFileList.getEntry(accountNumber)).readLine(i)),
 										separateMonth((linkedFileList.getEntry(accountNumber)).readLine(i)),
