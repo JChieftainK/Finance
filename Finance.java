@@ -23,6 +23,7 @@ public class Finance extends JFrame implements ActionListener{
 	private DecimalFormat pricePattern = new DecimalFormat("#0.00");
 	private DecimalFormat timePattern = new DecimalFormat("00");
 	private int accountNumber = 1;
+	private boolean accountSelected = false;
 	
 	public Finance(){ //Default Constructor
 		super("Financing Elements"); //Used to change title of window
@@ -41,7 +42,7 @@ public class Finance extends JFrame implements ActionListener{
 			int optionChose = JOptionPane.showOptionDialog(null, "Testing OPEN and NEW", "Title", 
 							JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, objects, objects[1]); 
 			
-			if(JOptionPane.NO_OPTION == optionChose){ //If Open is selected
+			if(JOptionPane.NO_OPTION == optionChose){ //If OPEN is selected
 				JOptionPane.showMessageDialog(null, "Select the folder then click open.\n You may only select a folder",
 												"Title", JOptionPane.PLAIN_MESSAGE); //Help Text for users
 				int openValue = chooser.showOpenDialog(null); //store the option for choosing a folder
@@ -64,15 +65,45 @@ public class Finance extends JFrame implements ActionListener{
 												"Incorrect Folder", JOptionPane.ERROR_MESSAGE);
 					}
 				}else if(openValue == JFileChooser.CANCEL_OPTION){
-					System.out.println("Cancel");
+					System.out.println("Cancel on Open");
 					System.exit(0);
 				}else if(openValue == JFileChooser.ERROR_OPTION){
-					System.out.println("Error");
+					System.out.println("Error on Open");
 					System.exit(0);
 				}
-			}else if(JOptionPane.YES_OPTION == optionChose){
+			}else if(JOptionPane.YES_OPTION == optionChose){ //If NEW is selected
 				System.out.println("Yes/New");
-				break;
+				String profileFolder = JOptionPane.showInputDialog("New Profile Name:" +
+												 "\nThis will create a folder using the given profile name.");
+				int newValue = chooser.showOpenDialog(null);
+				if(newValue == JFileChooser.APPROVE_OPTION){
+					System.out.println("save");
+					settingsFile.setPath(chooser.getSelectedFile().getAbsolutePath()); //Set Settings File Path
+					settingsFile.add(profileFolder);
+					System.out.println("Not exist: " + !settingsFile.checkIfExists()); //DEBUG
+					if(!settingsFile.checkIfExists()){
+						if(settingsFile.createFolder()){
+							settingsFile.add("FinanceSettings.txt");
+							settingsFile.createFile();
+							break;
+						}else{
+						JOptionPane.showMessageDialog(null, "The profile name \"" + profileFolder + 
+												"\" is in an incorrect format. \nMake sure the profile name contains only " +
+												"numbers, letters, or spaces.", 
+												"Incorrect Profile Name Format", JOptionPane.ERROR_MESSAGE);
+						}
+					}else{
+						JOptionPane.showMessageDialog(null, "The folder \"" + settingsFile.toString() + 
+												"\" already exists. \nChoose a different location or new profile name.", 
+												"Folder Already Exists", JOptionPane.ERROR_MESSAGE);
+					}
+				}else if(newValue == JFileChooser.CANCEL_OPTION){
+					System.out.println("Cancel on New");
+					System.exit(0);
+				}else if(newValue == JFileChooser.ERROR_OPTION){
+					System.out.println("Error on New");
+					System.exit(0);
+				}
 			}else{
 				System.exit(0);
 			}
@@ -178,59 +209,69 @@ public class Finance extends JFrame implements ActionListener{
 				System.exit(0);
 			}
 		}else if(ae.getSource() == incomeButton){
-			if(checkInputs(dayText.getText(), monthText.getText(), yearText.getText(), reasonText.getText(), amountText.getText())){
-				int optionChose = JOptionPane.showConfirmDialog(null, "Is this information correct?" +
+			if(accountSelected){
+				if(checkInputs(dayText.getText(), monthText.getText(), yearText.getText(), reasonText.getText(), amountText.getText())){
+					int optionChose = JOptionPane.showConfirmDialog(null, "Is this information correct?" +
 												"\nDay: " + timePattern.format(Integer.parseInt(dayText.getText())) + 
 												"\nMonth: " + timePattern.format(Integer.parseInt(monthText.getText())) +
 												"\nYear: " + yearText.getText() + 
 												"\nFrom: " + reasonText.getText() +
 												"\nAmount: " + pricePattern.format(Double.parseDouble(amountText.getText())),
 												"Information Given", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-				if(optionChose == JOptionPane.OK_OPTION){
-					linkedReceiptList.add(new Receipt(Integer.parseInt(dayText.getText()), Integer.parseInt(monthText.getText()),
+					if(optionChose == JOptionPane.OK_OPTION){
+						linkedReceiptList.add(new Receipt(Integer.parseInt(dayText.getText()), Integer.parseInt(monthText.getText()),
 												Integer.parseInt(yearText.getText()), reasonText.getText(), 
 												Double.parseDouble(amountText.getText()), 0));
-					//Add saving to the current account number
-					(linkedFileList.getEntry(accountNumber)).appendToFile(dayText.getText() + ":" + monthText.getText() + ":" +
+						//Add saving to the current account number
+						(linkedFileList.getEntry(accountNumber)).appendToFile(dayText.getText() + ":" + monthText.getText() + ":" +
 												yearText.getText() + ":" + reasonText.getText() + ":" + 
 												pricePattern.format(Double.parseDouble(amountText.getText())) + ":" + "0");
-					resetGUI();
-				}
-			}else{
-				JOptionPane.showMessageDialog(null, "The information is in an incorrect format." + 
+						resetGUI();
+					}
+				}else{
+					JOptionPane.showMessageDialog(null, "The information is in an incorrect format." + 
 												"\nDay: " + dayText.getText() + "\nMonth: " + monthText.getText() +
 												"\nYear: " + yearText.getText() + "\nFrom: " + reasonText.getText() +
 												"\nAmount: " + amountText.getText(),
 												"Incorrect Format", JOptionPane.ERROR_MESSAGE);
-				resetGUI();
+					resetGUI();
+				}
+			}else{
+				JOptionPane.showMessageDialog(null, "No account selected. Refer to ACCOUNTS in menu.", 
+											"No Account Loaded", JOptionPane.ERROR_MESSAGE);
 			}
 		}else if(ae.getSource() == expenseButton){
-			System.out.println("Expense");
-			if(checkInputs(dayText.getText(), monthText.getText(), yearText.getText(), reasonText.getText(), amountText.getText())){
-				int optionChose = JOptionPane.showConfirmDialog(null, "Is this information correct?" +
+			if(accountSelected){
+				System.out.println("Expense");
+				if(checkInputs(dayText.getText(), monthText.getText(), yearText.getText(), reasonText.getText(), amountText.getText())){
+					int optionChose = JOptionPane.showConfirmDialog(null, "Is this information correct?" +
 												"\nDay: " + timePattern.format(Integer.parseInt(dayText.getText())) + 
 												"\nMonth: " + timePattern.format(Integer.parseInt(monthText.getText())) +
 												"\nYear: " + yearText.getText() + 
 												"\nFrom: " + reasonText.getText() +
 												"\nAmount: " + pricePattern.format(Double.parseDouble(amountText.getText())),
 												"Information Given", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-				if(optionChose == JOptionPane.OK_OPTION){
-					linkedReceiptList.add(new Receipt(Integer.parseInt(dayText.getText()), Integer.parseInt(monthText.getText()),
+					if(optionChose == JOptionPane.OK_OPTION){
+						linkedReceiptList.add(new Receipt(Integer.parseInt(dayText.getText()), Integer.parseInt(monthText.getText()),
 												Integer.parseInt(yearText.getText()), reasonText.getText(), 
 												Double.parseDouble(amountText.getText()), 1));
-					//Add expense to the current account number
-					(linkedFileList.getEntry(accountNumber)).appendToFile(dayText.getText() + ":" + monthText.getText() + ":" +
+						//Add expense to the current account number
+						(linkedFileList.getEntry(accountNumber)).appendToFile(dayText.getText() + ":" + monthText.getText() + ":" +
 												yearText.getText() + ":" + reasonText.getText() + ":" + 
 												pricePattern.format(Double.parseDouble(amountText.getText())) + ":" + "1");
-					resetGUI();
-				}
-			}else{
-				JOptionPane.showMessageDialog(null, "The information is in an incorrect format." + 
+						resetGUI();
+					}
+				}else{
+					JOptionPane.showMessageDialog(null, "The information is in an incorrect format." + 
 												"\nDay: " + dayText.getText() + "\nMonth: " + monthText.getText() +
 												"\nYear: " + yearText.getText() + "\nFrom: " + reasonText.getText() +
 												"\nAmount: " + amountText.getText(),
 												"Incorrect Format", JOptionPane.ERROR_MESSAGE);
-				resetGUI();
+					resetGUI();
+				}
+			}else{
+				JOptionPane.showMessageDialog(null, "No account selected. Refer to ACCOUNTS in menu.", 
+												"No Account Loaded", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
@@ -284,6 +325,7 @@ public class Finance extends JFrame implements ActionListener{
 	
 	public void createProfile(){
 		if(!linkedFileList.isEmpty()){
+			accountSelected = true;
 			System.out.println("Lines: " + (linkedFileList.getEntry(accountNumber)).getLines());
 			for(int i = 1; i <= (linkedFileList.getEntry(accountNumber)).getLines(); i++){
 				linkedReceiptList.add(new Receipt(separateDay((linkedFileList.getEntry(accountNumber)).readLine(i)),
