@@ -208,8 +208,8 @@ public class Finance extends JFrame implements ActionListener{
 		//*************************************
 		contents.add(mainPanel, BorderLayout.SOUTH);
 		//*************************************
-		
 		setSize(300, 160); //Changes the size of the window by pixels
+		setLocationRelativeTo(null);
 		setVisible(true); //Tells it to be seen on the computer screen
 	}
 	
