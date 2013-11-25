@@ -10,7 +10,7 @@ import java.text.DecimalFormat;
 public class Finance extends JFrame implements ActionListener{
 	private Container contents;
 	private JMenuBar menuBar;
-	private JMenu menu;
+	private JMenu menu, subMenu;
 	private JMenuItem menuItem;
 	private JPanel mainPanel, buttonPanel, flowPanel;
 	private JTextField dayText, monthText, yearText, reasonText, amountText;
@@ -119,6 +119,17 @@ public class Finance extends JFrame implements ActionListener{
 		menuItem.addActionListener(this); //Add a listener to the object
 		menu.add(menuItem); //Add the "Exit"
 		
+		subMenu = new JMenu("Accounts");
+		menuBar.add(subMenu);
+		
+		menuItem = new JMenuItem("Add...");
+		menuItem.addActionListener(this);
+		subMenu.add(menuItem);
+		
+		menuItem = new JMenuItem("Select...");
+		menuItem.addActionListener(this);
+		subMenu.add(menuItem);
+		
 		setJMenuBar(menuBar); //Adds menu bar to GUI
 		//*************************************
 		mainPanel = new JPanel();
@@ -207,6 +218,34 @@ public class Finance extends JFrame implements ActionListener{
 			JMenuItem source = (JMenuItem)(ae.getSource());
 			if(source.getText() == "Exit"){ //Exit clicked. Exit program
 				System.exit(0);
+			}else if(source.getText() == "Add..."){
+				System.out.println("Add");
+				String accountTitle = JOptionPane.showInputDialog("New Acount Name:" +
+												"\nThis will create an account using the given name.");
+				if((new FileMod(settingsFile.getParentPath(), (accountTitle + ".txt"))).createFile()){
+					settingsFile.appendToFile(accountTitle + ".txt");
+					linkedFileList.add(new FileMod(settingsFile.getParentPath(), (accountTitle + ".txt")));
+				}else{
+					JOptionPane.showMessageDialog(null, "The account name \"" + accountTitle + 
+											"\" is in an incorrect format. \nMake sure the account name contains only " +
+											"numbers, letters, or spaces.", 
+											"Incorrect Profile Name Format", JOptionPane.ERROR_MESSAGE);
+				}
+			}else if(source.getText() == "Select..."){
+				System.out.println("Select");
+				if(!linkedFileList.isEmpty()){
+					System.out.println("Select Full: " + !linkedFileList.isEmpty());
+					JComboBox jcb;
+					String[] fileList = new String[linkedFileList.getLength()];
+					for(int i = 1; i <= linkedFileList.getLength(); i++){
+						fileList[i - 1] = (linkedFileList.getEntry(i)).toString();
+					}
+					jcb = new JComboBox(fileList);
+					JOptionPane.showMessageDialog( null, jcb, "Select Account", JOptionPane.QUESTION_MESSAGE);
+					accountNumber = jcb.getSelectedIndex() + 1;
+					createProfile();
+					calculateAmount();
+				}
 			}
 		}else if(ae.getSource() == incomeButton){
 			if(accountSelected){
@@ -326,6 +365,7 @@ public class Finance extends JFrame implements ActionListener{
 	public void createProfile(){
 		if(!linkedFileList.isEmpty()){
 			accountSelected = true;
+			linkedReceiptList = new LList<Receipt>();
 			System.out.println("Lines: " + (linkedFileList.getEntry(accountNumber)).getLines());
 			for(int i = 1; i <= (linkedFileList.getEntry(accountNumber)).getLines(); i++){
 				linkedReceiptList.add(new Receipt(separateDay((linkedFileList.getEntry(accountNumber)).readLine(i)),
